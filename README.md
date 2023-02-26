@@ -1,3 +1,3 @@
 # movies-explorer-api
 
-[Домен](api.domainname.maryball.nomoredomains.work)
+Домен: api.domainname.maryball.nomoredomains.work
