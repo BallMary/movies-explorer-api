@@ -30,7 +30,6 @@ app.post(
   '/signin',
   celebrate({
     body: Joi.object().keys({
-      name: Joi.string().min(2).max(30),
       email: Joi.string().required().email(),
       password: Joi.string().required(),
     }),
@@ -43,11 +42,10 @@ app.post(
   celebrate({
     body: Joi.object()
       .keys({
-        name: Joi.string().min(2).max(30),
+        name: Joi.string().required(),
         email: Joi.string().required().email(),
         password: Joi.string().required(),
-      })
-      .unknown(true),
+      }),
   }),
   createUser,
 );
