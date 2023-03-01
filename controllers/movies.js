@@ -45,12 +45,12 @@ module.exports.createMovie = (req, res, next) => {
 
 module.exports.deleteMovie = async (req, res, next) => {
   try {
-    const movieId = await Movie.findOne({ _id: req.params.movieId });
+    const movieId = await Movie.findOne({ _id: req.params.id });
     const OwnerId = req.user._id;
     if (movieId === null) {
       next(new NotFoundError(Constants.NOT_FOUND_CARD_WITH_ID));
     } else if (movieId.owner.valueOf() === OwnerId) {
-      const movie = await Movie.findByIdAndRemove(req.params.movieId);
+      const movie = await Movie.findByIdAndRemove(req.params.id);
       res.send(movie);
     } else {
       next(new OwnerError(Constants.DELETE_PROHIBITED));

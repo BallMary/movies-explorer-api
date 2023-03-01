@@ -1,11 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const { celebrate, Joi, errors } = require('celebrate');
+const { errors } = require('celebrate');
+const helmet = require('helmet');
 const cors = require('cors');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { validateSigninPost, validateSignupPost } = require('./routes/validation');
+const { rateLimiterUseOneHour } = require('./middlewares/rateLimiter');
 
 const { NODE_ENV, MONGO_URL } = process.env;
 const { PORT = 3000 } = process.env;
@@ -13,6 +16,9 @@ const app = express();
 
 mongoose.set('strictQuery', true);
 mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : 'mongodb://localhost:27017/bitfilmsdb');
+
+app.use(rateLimiterUseOneHour);
+app.use(helmet());
 
 app.use(express.json());
 
@@ -28,25 +34,13 @@ app.get('/crash-test', () => {
 
 app.post(
   '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }),
+  validateSigninPost(),
   login,
 );
 
 app.post(
   '/signup',
-  celebrate({
-    body: Joi.object()
-      .keys({
-        name: Joi.string().required(),
-        email: Joi.string().required().email(),
-        password: Joi.string().required(),
-      }),
-  }),
+  validateSignupPost(),
   createUser,
 );
 
