@@ -17,14 +17,13 @@ const app = express();
 mongoose.set('strictQuery', true);
 mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : 'mongodb://localhost:27017/bitfilmsdb');
 
+app.use(requestLogger);
 app.use(rateLimiterUseOneHour);
 app.use(helmet());
 
 app.use(express.json());
 
 app.use(cors());
-
-app.use(requestLogger);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
