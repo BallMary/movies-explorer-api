@@ -7,7 +7,7 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { validateSigninPost, validateSignupPost } = require('./routes/validation');
-const { rateLimiterUseOneHour } = require('./middlewares/rateLimiter');
+const { rateLimiter } = require('./middlewares/rateLimiter');
 
 const { NODE_ENV, MONGO_URL } = process.env;
 const { PORT = 3000 } = process.env;
@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 });
 
 app.use(requestLogger);
-app.use(rateLimiterUseOneHour);
+app.use(rateLimiter);
 app.use(helmet());
 
 app.use(express.json());
